@@ -2,6 +2,7 @@ package com.dexterous.flutterlocalnotifications.models;
 
 import android.graphics.Color;
 import android.os.Build;
+import android.util.Log;
 
 import com.dexterous.flutterlocalnotifications.BitmapSource;
 import com.dexterous.flutterlocalnotifications.NotificationStyle;
@@ -18,6 +19,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class NotificationDetails {
+    public static final String TAG = "NotificationDetails";
     private static final String PAYLOAD = "payload";
     private static final String MILLISECONDS_SINCE_EPOCH = "millisecondsSinceEpoch";
     private static final String CALLED_AT = "calledAt";
@@ -99,6 +101,13 @@ public class NotificationDetails {
     public static final String TICKER = "ticker";
     public static final String ALLOW_WHILE_IDLE = "allowWhileIdle";
 
+    public static final String FIRST_ACTION_TEXT = "firstActionText";
+    public static final String FIRST_ACTION_HANDLE = "firstActionHandle";
+    public static final String SECOND_ACTION_TEXT = "secondActionText";
+    public static final String SECOND_ACTION_HANDLE = "secondActionHandle";
+    public static final String THIRD_ACTION_TEXT = "thirdActionText";
+    public static final String THIRD_ACTION_HANDLE = "thirdActionHandle";
+
     public Integer id;
     public String title;
     public String body;
@@ -141,6 +150,12 @@ public class NotificationDetails {
     public Integer ledOffMs;
     public String ticker;
     public Boolean allowWhileIdle;
+    public String firstActionText;
+    public Long firstActionHandle;
+    public String secondActionText;
+    public Long secondActionHandle;
+    public String thirdActionText;
+    public Long thirdActionHandle;
 
 
     // Note: this is set on the Android to save details about the icon that should be used when re-hydrating scheduled notifications when a device has been restarted.
@@ -211,6 +226,19 @@ public class NotificationDetails {
             }
             notificationDetails.ticker = (String) platformChannelSpecifics.get(TICKER);
             notificationDetails.allowWhileIdle = (Boolean) platformChannelSpecifics.get(ALLOW_WHILE_IDLE);
+
+            if (platformChannelSpecifics.containsKey(FIRST_ACTION_TEXT) && platformChannelSpecifics.containsKey(FIRST_ACTION_HANDLE)) {
+                notificationDetails.firstActionText = (String) platformChannelSpecifics.get(FIRST_ACTION_TEXT);
+                notificationDetails.firstActionHandle = (Long) platformChannelSpecifics.get(FIRST_ACTION_HANDLE);
+            }
+            if (platformChannelSpecifics.containsKey(SECOND_ACTION_TEXT) && platformChannelSpecifics.containsKey(SECOND_ACTION_HANDLE)) {
+                notificationDetails.secondActionText = (String) platformChannelSpecifics.get(SECOND_ACTION_TEXT);
+                notificationDetails.secondActionHandle = (Long) platformChannelSpecifics.get(SECOND_ACTION_HANDLE);
+            }
+            if (platformChannelSpecifics.containsKey(THIRD_ACTION_TEXT) && platformChannelSpecifics.containsKey(THIRD_ACTION_HANDLE)) {
+                notificationDetails.thirdActionText = (String) platformChannelSpecifics.get(THIRD_ACTION_TEXT);
+                notificationDetails.thirdActionHandle = (Long) platformChannelSpecifics.get(THIRD_ACTION_HANDLE);
+            }  
         }
         return notificationDetails;
     }

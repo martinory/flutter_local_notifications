@@ -16,6 +16,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -60,6 +61,7 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
  * FlutterLocalNotificationsPlugin
  */
 public class FlutterLocalNotificationsPlugin implements MethodCallHandler, PluginRegistry.NewIntentListener {
+    public static final String TAG = "NotificationsPlugin";
     public static final String SHARED_PREFERENCES_KEY = "notification_plugin_cache";
     private static final String DRAWABLE = "drawable";
     private static final String DEFAULT_ICON = "defaultIcon";
@@ -90,6 +92,7 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
     public static String NOTIFICATION = "notification";
     public static String NOTIFICATION_DETAILS = "notificationDetails";
     public static String REPEAT = "repeat";
+    private static final String NOTIFICATION_ACTION = "com.dexterous.flutterlocalnotifications.NOTIFICATION_ACTION";
     private final Registrar registrar;
     private MethodChannel channel;
 
@@ -127,6 +130,34 @@ public class FlutterLocalNotificationsPlugin implements MethodCallHandler, Plugi
                 .setPriority(notificationDetails.priority)
                 .setOngoing(BooleanUtils.getValue(notificationDetails.ongoing))
                 .setOnlyAlertOnce(BooleanUtils.getValue(notificationDetails.onlyAlertOnce));
+    
+                Log.i(TAG, "firstActionText: " + notificationDetails.firstActionText);
+                Log.i(TAG, "firstActionHandle: " + notificationDetails.firstActionHandle);
+
+        if (!StringUtils.isNullOrEmpty(notificationDetails.firstActionText) && notificationDetails.firstActionHandle != null) {
+            Log.i(TAG, "Adding first action to notification");
+            Intent actionIntent = new Intent(NOTIFICATION_ACTION);
+            actionIntent.putExtra("callbackHandle", notificationDetails.firstActionHandle);
+            PendingIntent actionPendingIntent =
+                    PendingIntent.getBroadcast(context.getApplicationContext(), notificationDetails.id, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.addAction(0, notificationDetails.firstActionText, actionPendingIntent);
+        }
+        if (!StringUtils.isNullOrEmpty(notificationDetails.secondActionText) && notificationDetails.secondActionHandle != null) {
+            Log.i(TAG, "Adding second action to notification");
+            Intent actionIntent = new Intent(NOTIFICATION_ACTION);
+            actionIntent.putExtra("callbackHandle", notificationDetails.secondActionHandle);
+            PendingIntent actionPendingIntent =
+                    PendingIntent.getBroadcast(context.getApplicationContext(), notificationDetails.id, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.addAction(0, notificationDetails.secondActionText, actionPendingIntent);
+        }
+        if (!StringUtils.isNullOrEmpty(notificationDetails.thirdActionText) && notificationDetails.thirdActionHandle != null) {
+            Log.i(TAG, "Adding third action to notification");
+            Intent actionIntent = new Intent(NOTIFICATION_ACTION);
+            actionIntent.putExtra("callbackHandle", notificationDetails.thirdActionHandle);
+            PendingIntent actionPendingIntent =
+                    PendingIntent.getBroadcast(context.getApplicationContext(), notificationDetails.id, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            builder.addAction(0, notificationDetails.thirdActionText, actionPendingIntent);
+        }
 
         setSmallIcon(context, notificationDetails, builder);
         if (!StringUtils.isNullOrEmpty(notificationDetails.largeIcon)) {

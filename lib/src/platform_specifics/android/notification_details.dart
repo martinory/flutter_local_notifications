@@ -104,39 +104,71 @@ class AndroidNotificationDetails {
   /// The action to take for managing notification channels. Defaults to creating the notification channel using the provided details if it doesn't exist
   AndroidNotificationChannelAction channelAction;
 
+  String firstActionText;
+
+  dynamic Function() firstActionCallback;
+
+  String secondActionText;
+
+  dynamic Function() secondActionCallback;
+
+  String thirdActionText;
+
+  dynamic Function() thirdActionCallback;
+
   AndroidNotificationDetails(
-      this.channelId, this.channelName, this.channelDescription,
-      {this.icon,
-      this.importance = Importance.Default,
-      this.priority = Priority.Default,
-      this.style = AndroidNotificationStyle.Default,
-      this.styleInformation,
-      this.playSound = true,
-      this.sound,
-      this.enableVibration = true,
-      this.vibrationPattern,
-      this.groupKey,
-      this.setAsGroupSummary,
-      this.groupAlertBehavior = GroupAlertBehavior.All,
-      this.autoCancel = true,
-      this.ongoing,
-      this.color,
-      this.largeIcon,
-      this.largeIconBitmapSource,
-      this.onlyAlertOnce,
-      this.channelShowBadge = true,
-      this.showProgress = false,
-      this.maxProgress = 0,
-      this.progress = 0,
-      this.indeterminate = false,
-      this.channelAction = AndroidNotificationChannelAction.CreateIfNotExists,
-      this.enableLights = false,
-      this.ledColor,
-      this.ledOnMs,
-      this.ledOffMs,
-      this.ticker});
+    this.channelId,
+    this.channelName,
+    this.channelDescription, {
+    this.icon,
+    this.importance = Importance.Default,
+    this.priority = Priority.Default,
+    this.style = AndroidNotificationStyle.Default,
+    this.styleInformation,
+    this.playSound = true,
+    this.sound,
+    this.enableVibration = true,
+    this.vibrationPattern,
+    this.groupKey,
+    this.setAsGroupSummary,
+    this.groupAlertBehavior = GroupAlertBehavior.All,
+    this.autoCancel = true,
+    this.ongoing,
+    this.color,
+    this.largeIcon,
+    this.largeIconBitmapSource,
+    this.onlyAlertOnce,
+    this.channelShowBadge = true,
+    this.showProgress = false,
+    this.maxProgress = 0,
+    this.progress = 0,
+    this.indeterminate = false,
+    this.channelAction = AndroidNotificationChannelAction.CreateIfNotExists,
+    this.enableLights = false,
+    this.ledColor,
+    this.ledOnMs,
+    this.ledOffMs,
+    this.ticker,
+    this.firstActionText,
+    this.firstActionCallback,
+    this.secondActionText,
+    this.secondActionCallback,
+    this.thirdActionText,
+    this.thirdActionCallback,
+  });
 
   Map<String, dynamic> toMap() {
+    CallbackHandle handle1, handle2, handle3;
+    if (firstActionCallback != null) {
+      handle1 = PluginUtilities.getCallbackHandle(firstActionCallback);
+    }
+    if (secondActionCallback != null) {
+      handle2 = PluginUtilities.getCallbackHandle(secondActionCallback);
+    }
+    if (thirdActionCallback != null) {
+      handle3 = PluginUtilities.getCallbackHandle(thirdActionCallback);
+    }
+
     return <String, dynamic>{
       'icon': icon,
       'channelId': channelId,
@@ -177,7 +209,13 @@ class AndroidNotificationDetails {
       'ledColorBlue': ledColor?.blue,
       'ledOnMs': ledOnMs,
       'ledOffMs': ledOffMs,
-      'ticker': ticker
+      'ticker': ticker,
+      'firstActionText': firstActionText,
+      'firstActionHandle': handle1?.toRawHandle(),
+      'secondActionText': secondActionText,
+      'secondActionHandle': handle2?.toRawHandle(),
+      'thirdActionText': thirdActionText,
+      'thirdActionHandle': handle3?.toRawHandle(),
     };
   }
 }
